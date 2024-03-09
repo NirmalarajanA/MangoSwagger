@@ -4,9 +4,8 @@ info:
   version: "1.0.0"
   title: Simple Invoice Validation API
 servers:
-  # Added by API Auto Mocking Plugin
-  url: https://virtserver.swaggerhub.com/AKSHAYANN03/MangoValidator/1.0.0
-  description: SwaggerHub API Auto Mocking
+  - url: https://virtserver.swaggerhub.com/AKSHAYANN03/MangoValidator/1.0.0
+    description: SwaggerHub API Auto Mocking
 tags:
   - name: Authentication 
   - name: Validation  
@@ -417,3 +416,4 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Log'
+
