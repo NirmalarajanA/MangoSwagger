@@ -1,6 +1,23 @@
+openapi: 3.0.0
+info:
+  description: Invoice Validator API 
+  version: "1.0.0"
+  title: Simple Invoice Validation API
+servers:
+  # Added by API Auto Mocking Plugin
+  url: https://virtserver.swaggerhub.com/AKSHAYANN03/MangoValidator/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+  - name: Authentication 
+  - name: Validation  
+  - name: Invoice
+  - name: Report 
+  - name: Server 
 paths:
   /auth/login:
     post:
+      tags:
+        - Authentication 
       summary: User authentication
       requestBody:
         required: true
@@ -32,6 +49,8 @@ paths:
                     example: Invalid credentials provided
   /auth/logout:
     post:
+      tags:
+        - Authentication 
       summary: User logout
       requestBody:
         required: true
@@ -57,6 +76,8 @@ paths:
                     example: Invalid token provided
   /auth/register:
     post:
+      tags:
+        - Authentication 
       summary: User registration
       requestBody:
         required: true
@@ -81,9 +102,11 @@ paths:
                   message:
                     type: string
                     example: User already exists
-  /validate/json:
+  /validate:
     post:
-      summary: Validate invoices against Australian standards (JSON)
+      summary: Validate invoices against Australian standards
+      tags: 
+        - Validation
       requestBody:
         required: true
         content:
@@ -102,67 +125,12 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid invoice format provided
-  /validate/pdf:
-    post:
-      summary: Validate invoices against Australian standards (PDF)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InvoiceData'
-      responses:
-        '200':
-          description: Validation successful
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: binary
-        '400':
-          description: Invalid invoice format
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid invoice format provided
-  /validate/html:
-    post:
-      summary: Validate invoices against Australian standards (HTML)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InvoiceData'
-      responses:
-        '200':
-          description: Validation successful
-          content:
-            text/html:
-              schema:
-                type: string
-        '400':
-          description: Invalid invoice format
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid invoice format provided
+                $ref: '#/components/schemas/ValidationResult'
   /invoices/{id}:
     put:
       summary: Upload an invoice
+      tags: 
+        - Invoice
       parameters:
         - name: id
           in: path
@@ -194,13 +162,11 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invoice with provided ID not found
+                $ref: '#/components/schemas/Invoice'
     delete:
       summary: Delete invoice by ID
+      tags: 
+        - Invoice
       parameters:
         - name: id
           in: path
@@ -216,14 +182,12 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invoice with provided ID not found
-  /reports/invoices:
+                $ref: '#/components/schemas/Invoice'
+  /reports/invoices/json:
     get:
-      summary: Generate reports on invoices
+      summary: Generate reports on invoices (JSON)
+      tags: 
+        - Report
       responses:
         '200':
           description: Report generated successfully
@@ -231,8 +195,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Report'
+  /reports/invoices/pdf:
+    get:
+      summary: Generate reports on invoices (PDF)
+      tags: 
+        - Report
+      responses:
+        '200':
+          description: Report generated successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+  /reports/invoices/html:
+    get:
+      summary: Generate reports on invoices (HTML)
+      tags: 
+        - Report
+      responses:
+        '200':
+          description: Report generated successfully
+          content:
+            text/html:
+              schema:
+                type: string
   /settings:
     put:
+      tags:
+        - Server 
       summary: Update system settings
       requestBody:
         required: true
@@ -249,6 +240,8 @@ paths:
                 $ref: '#/components/schemas/Settings'
   /logs:
     get:
+      tags:
+        - Server
       summary: Access system logs
       responses:
         '200':
@@ -259,6 +252,8 @@ paths:
                 $ref: '#/components/schemas/Log'
   /docs:
     get:
+      tags:
+        - Server
       summary: Access API documentation
       responses:
         '200':
@@ -269,6 +264,8 @@ paths:
                 $ref: '#/components/schemas/Documentation'
   /help:
     get:
+      tags:
+        - Server
       summary: Access help and support resources
       responses:
         '200':
@@ -279,6 +276,8 @@ paths:
                 $ref: '#/components/schemas/HelpResources'
   /ping:
     get:
+      tags:
+        - Server
       summary: Check if the API server is running
       responses:
         '200':
@@ -289,6 +288,8 @@ paths:
                 type: string
   /version:
     get:
+      tags:
+        - Server
       summary: Retrieve API version information
       responses:
         '200':
@@ -299,6 +300,8 @@ paths:
                 $ref: '#/components/schemas/Version'
   /log/history:
     get:
+      tags:
+        - Server
       summary: Retrieve historical validations and results summarised in a document
       parameters:
         - name: id
